@@ -1,26 +1,240 @@
 @import "tailwindcss";
+/* @import "tw-animate-css"; */
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-elevation-1: var(--elevation-1);
+  --color-elevation-2: var(--elevation-2);
+  --color-text: var(--text);
+  --color-text-inverted: var(--text-inverted);
+  
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-foreground: var(--tertiary-foreground);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-error: var(--error);
+  --color-error-foreground: var(--error-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  --color-card: var(--elevation-1);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--elevation-2);
+  --color-popover-foreground: var(--foreground);
+  --color-muted: var(--tertiary);
+  --color-muted-foreground: var(--tertiary-foreground);
+  --color-destructive: var(--error);
+  --color-destructive-foreground: var(--error-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-sidebar: var(--elevation-1);
+  --color-sidebar-foreground: var(--foreground);
+  --color-sidebar-primary: var(--primary);
+  --color-sidebar-primary-foreground: var(--primary-foreground);
+  --color-sidebar-accent: var(--accent);
+  --color-sidebar-accent-foreground: var(--accent-foreground);
+  --color-sidebar-border: var(--border);
+  --color-sidebar-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.75rem;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+
+/* Tema LIGHT */
+.light {
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+
+  /* Cores de destaque e texto */
+  --text: #4a4a4a;
+  --text-inverted: #ffffff;
+
+  /* Camadas visuais */
+  --elevation-1: #f6f6f6;
+  --elevation-2: #ededed;
+
+  /* Cores principais */
+  --primary: #69b3fd; /* Azul vibrante */
+  --primary-foreground: #ffffff;
+
+  --secondary: #26A69A; /* Teal vibrante */
+  --secondary-foreground: #1a1a1a;
+
+  /* Acentos sutis derivados */
+  --accent: #56ffbe; /* Roxo vibrante */
+  --accent-foreground: #ffffff;
+
+  /* Estados */
+  --success: #388E3C; /* Verde escuro */
+  --success-foreground: #ffffff;
+
+  --error: #D81B60; /* Rosa magenta */
+  --error-foreground: #ffffff;
+
+  --warning: #512DA8; /* Roxo escuro */
+  --warning-foreground: #ffffff;
+
+  --info: #0288D1; /* Azul claro */
+  --info-foreground: #ffffff;
+
+  /* Bordas, inputs, anéis */
+  --border: #d1d1d1;
+  --input: #e8e8e8;
+  --ring: #1976D2;
+
+  /* Complementares */
+  --muted: #e0e0e0;
+  --muted-foreground: #4a4a4a;
+
+  /* Componentes */
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --destructive: #D81B60;
+  --destructive-foreground: #ffffff;
+
+  /* Sidebar */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #4a4a4a;
+  --sidebar-primary: #1976D2;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #26A69A;
+  --sidebar-accent-foreground: #1a1a1a;
+  --sidebar-border: #d1d1d1;
+  --sidebar-ring: #1976D2;
+
+  /* Charts (tons derivados da paleta) */
+  --chart-1: #1976D2; /* Azul vibrante */
+  --chart-2: #26A69A; /* Teal vibrante */
+  --chart-3: #7B1FA2; /* Roxo vibrante */
+  --chart-4: #388E3C; /* Verde escuro */
+  --chart-5: #0288D1; /* Azul claro */
+}
+
+/* Tema DARK - versão inversa do light */
+.dark {
+  --background: #1a1a1a;
+  --foreground: #ffffff;
+
+  /* Cores de destaque e texto */
+  --text: #b0b0b0;
+  --text-inverted: #1a1a1a;
+
+  /* Camadas visuais - tons escuros */
+  --elevation-1: #252525;
+  --elevation-2: #303030;
+
+  /* Cores principais */
+  --primary: #69b3fd; /* Azul vibrante */
+  --primary-foreground: #ffffff;
+
+  --secondary: #1cd4c2; /* Teal vibrante */
+  --secondary-foreground: #1a1a1a;
+
+  /* Acentos sutis derivados */
+  --accent: #56ffbe; /* Roxo vibrante */
+  --accent-foreground: #ffffff;
+
+  /* Estados */
+  --success: #388E3C; /* Verde escuro */
+  --success-foreground: #ffffff;
+
+  --error: #D81B60; /* Rosa magenta */
+  --error-foreground: #ffffff;
+
+  --warning: #512DA8; /* Roxo escuro */
+  --warning-foreground: #ffffff;
+
+  --info: #0288D1; /* Azul claro */
+  --info-foreground: #ffffff;
+
+  /* Bordas, inputs, anéis */
+  --border: #3a3a3a;
+  --input: #2a2a2a;
+  --ring: #1976D2;
+
+  /* Complementares */
+  --muted: #2a2a2a;
+  --muted-foreground: #b0b0b0;
+
+  /* Componentes */
+  --card: #252525;
+  --card-foreground: #ffffff;
+  --popover: #252525;
+  --popover-foreground: #ffffff;
+  --destructive: #D81B60;
+  --destructive-foreground: #ffffff;
+
+  /* Sidebar */
+  --sidebar: #252525;
+  --sidebar-foreground: #b0b0b0;
+  --sidebar-primary: #1976D2;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #26A69A;
+  --sidebar-accent-foreground: #1a1a1a;
+  --sidebar-border: #3a3a3a;
+  --sidebar-ring: #1976D2;
+
+  /* Charts (tons derivados da paleta) */
+  --chart-1: #1976D2; /* Azul vibrante */
+  --chart-2: #26A69A; /* Teal vibrante */
+  --chart-3: #7B1FA2; /* Roxo vibrante */
+  --chart-4: #388E3C; /* Verde escuro */
+  --chart-5: #0288D1; /* Azul claro */
+}
+
+*:focus,
+*:focus-visible,
+.no-transition,
+.no-transition * {
+  transition: none !important;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  font-family: var(--font-sans, Arial, Helvetica, sans-serif);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
