@@ -32,6 +32,9 @@ model File {
 
   // Compartilhamento individual
   shares FileShare[] // Compartilhamentos específicos
+  
+  // Compartilhamento por link
+  links FileLink[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -58,4 +61,17 @@ model FileShare {
 enum FileRole {
   EDITOR
   VIEWER
+}
+
+model FileLink {
+  id        String   @id @default(uuid())
+  fileId    String
+  file      File     @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  token     String   @unique // Token único para o link
+  expiresAt DateTime? // Opcional: data de expiração
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([fileId])
+  @@index([token])
 }

@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Folder, FolderOpen, Group, Shredder, Users, Users2 } from 'lucide-react';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -25,7 +26,11 @@ export default function Sidebar() {
                 : 'text-foreground hover:bg-elevation-2'
             }`}
           >
-            <span className="text-lg">📁</span>
+            {isActive('/my-files') ? (
+              <FolderOpen size={24} />
+            ) : (
+              <Folder size={24} />
+            )}
             <span className="font-medium">Meus Arquivos</span>
           </Link>
 
@@ -37,7 +42,11 @@ export default function Sidebar() {
                 : 'text-foreground hover:bg-elevation-2'
             }`}
           >
-            <span className="text-lg">🔗</span>
+            {isActive('/shared-with-me') ? (
+              <Shredder size={24} />
+            ) : (
+              <Shredder size={24} />
+            )}
             <span className="font-medium">Compartilhado Comigo</span>
           </Link>
         </div>

@@ -1,27 +1,147 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 import { CreateFileDto } from 'src/file/dto/create-file.dto';
 import { UpdateFileDto } from 'src/file/dto/update-file.dto';
-
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class FileService {
-  create(createFileDto: CreateFileDto) {
-    return 'This action adds a new file';
+  constructor(private readonly prismaService: PrismaService) {}
+
+  async create(createFileDto: CreateFileDto, ownerId: string) {
+    return this.prismaService.file.create({
+      data: {
+        ...createFileDto,
+        ownerId,
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all file`;
+  async findAll(ownerId: string) {
+    return this.prismaService.file.findMany({
+      where: {
+        ownerId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} file`;
+  async findOne(id: string, ownerId: string) {
+    return this.prismaService.file.findFirst({
+      where: {
+        id,
+        ownerId,
+      },
+    });
   }
 
-  update(id: string, updateFileDto: UpdateFileDto) {
-    return `This action updates a #${id} file`;
+  async update(id: string, ownerId: string, updateFileDto: UpdateFileDto) {
+    return this.prismaService.file.updateMany({
+      where: {
+        id,
+        ownerId,
+      },
+      data: updateFileDto,
+    });
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} file`;
+  async updateWithAccess(id: string, userId: string, updateFileDto: UpdateFileDto) {
+    // Verificar se é o dono
+    const file = await this.prismaService.file.findUnique({
+      where: { id },
+    });
+
+    if (!file) {
+      throw new ForbiddenException('File not found');
+    }
+
+    // Validar que a extensão não foi alterada
+    if (updateFileDto.originalName) {
+      const oldExt = this.getFileExtension(file.originalName);
+      const newExt = this.getFileExtension(updateFileDto.originalName);
+
+      if (oldExt !== newExt) {
+        throw new ForbiddenException('Cannot change file extension');
+      }
+    }
+
+    if (file.ownerId === userId) {
+      // Dono pode atualizar
+      return this.prismaService.file.update({
+        where: { id },
+        data: updateFileDto,
+      });
+    }
+
+    // Verificar se tem acesso como editor
+    const share = await this.prismaService.fileShare.findFirst({
+      where: {
+        fileId: id,
+        userId,
+        role: 'EDITOR',
+      },
+    });
+
+    if (!share) {
+      throw new ForbiddenException('You do not have permission to update this file');
+    }
+
+    return this.prismaService.file.update({
+      where: { id },
+      data: updateFileDto,
+    });
+  }
+
+  private getFileExtension(filename: string): string {
+    const lastDotIndex = filename.lastIndexOf('.');
+    if (lastDotIndex === -1) {
+      return '';
+    }
+    return filename.substring(lastDotIndex).toLowerCase();
+  }
+
+  async remove(id: string, ownerId: string) {
+    return this.prismaService.file.deleteMany({
+      where: {
+        id,
+        ownerId,
+      },
+    });
+  }
+
+  async removeWithAccess(id: string, userId: string) {
+    // Verificar se é o dono
+    const file = await this.prismaService.file.findUnique({
+      where: { id },
+    });
+
+    if (!file) {
+      throw new ForbiddenException('File not found');
+    }
+
+    if (file.ownerId === userId) {
+      // Dono pode deletar
+      return this.prismaService.file.delete({
+        where: { id },
+      });
+    }
+
+    // Verificar se tem acesso como editor
+    const share = await this.prismaService.fileShare.findFirst({
+      where: {
+        fileId: id,
+        userId,
+        role: 'EDITOR',
+      },
+    });
+
+    if (!share) {
+      throw new ForbiddenException('You do not have permission to delete this file');
+    }
+
+    return this.prismaService.file.delete({
+      where: { id },
+    });
   }
 }

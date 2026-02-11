@@ -4,18 +4,24 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import Image from 'next/image';
+import { Button } from './ui/button';
+import { Upload } from 'lucide-react';
+import UploadModal from './UploadModal';
 
 export default function Navbar() {
   const router = useRouter();
   const { user, signout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
 
   const handleSignout = async () => {
     try {
       await signout();
       router.push('/signin');
     } catch (error) {
-      console.error('Erro ao deslogar:', error);
+      // Error handling for logout
     }
   };
 
@@ -23,10 +29,16 @@ export default function Navbar() {
     <nav className="bg-elevation-1 border-b border-border sticky top-0 z-40">
       <div className="flex items-center justify-between h-16 px-6">
         {/* Logo */}
-        <Link href="/my-files" className="flex items-center gap-2">
-          <div className="text-2xl font-bold text-primary">Pickbox</div>
+        <Link href="/my-files" className="flex items-center gap-2 p -"> 
+          <Image src="/logo.png" alt="Logo" width={80} height={80} />
         </Link>
 
+        <div className="flex gap-4 items-center">
+
+        <Button onClick={() => setIsOpen(true)}>
+          Upload
+          <Upload />
+        </Button>
         {/* User Menu */}
         {user && (
           <div className="relative">
@@ -71,7 +83,10 @@ export default function Navbar() {
             )}
           </div>
         )}
+
+        </div>
       </div>
+      <UploadModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </nav>
   );
 }
