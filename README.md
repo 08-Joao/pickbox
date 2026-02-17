@@ -10,7 +10,7 @@ O trabalho tem como tema o desenvolvimento de um aplicação web de armazenament
 Este projeto terá as seguintes funcionalidades:
 
 - Criar conta e realizar login.
-- Excluir conta e realizar logout.
+- Realizar logout.
 - Fazer upload de arquivos.
 - Apagar arquivos.
 - Listar arquivos.

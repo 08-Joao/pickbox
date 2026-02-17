@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = 'http://localhost:4000';
+const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 
 const backendRoute = axios.create({

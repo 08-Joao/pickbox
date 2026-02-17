@@ -106,6 +106,23 @@ export default function SharedWithMeList() {
     }
   };
 
+  const handleDownload = async (fileId: string, fileName: string) => {
+    try {
+      const response = await Api.downloadFile(fileId);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err: any) {
+      const errorMessage = err?.response?.data?.message || 'Erro ao baixar arquivo';
+      setError(errorMessage);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className='flex items-center justify-center py-12'>
@@ -220,14 +237,13 @@ export default function SharedWithMeList() {
                     <Edit2 size={18} />
                   </button>
                 )}
-                <a
-                  href={`${process.env.NEXT_PUBLIC_API_URL}/files/download/${share.file.id}`}
-                  download={share.file.originalName}
+                <button
+                  onClick={() => handleDownload(share.file.id, share.file.originalName)}
                   className='p-2 hover:bg-elevation-1 rounded transition-colors text-text hover:text-foreground'
                   title='Baixar arquivo'
                 >
                   <Download size={18} />
-                </a>
+                </button>
               </>
             )}
           </div>

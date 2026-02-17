@@ -50,7 +50,7 @@ export class FileController {
         cb(null, true);
       },
       limits: {
-        fileSize: 100 * 1024 * 1024, // 100MB
+        fileSize: 1024 * 1024 * 1024, // 1GB
       },
     }),
   )

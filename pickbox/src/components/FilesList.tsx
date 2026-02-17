@@ -129,6 +129,23 @@ export default function FilesList() {
     });
   };
 
+  const handleDownload = async (fileId: string, fileName: string) => {
+    try {
+      const response = await Api.downloadFile(fileId);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err: any) {
+      const errorMessage = err?.response?.data?.message || 'Erro ao baixar arquivo';
+      setError(errorMessage);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className='flex items-center justify-center py-12'>
@@ -255,14 +272,13 @@ export default function FilesList() {
                 >
                   <Link2 size={18} />
                 </button>
-                <a
-                  href={`${process.env.NEXT_PUBLIC_API_URL}/files/download/${file.id}`}
-                  download={file.originalName}
+                <button
+                  onClick={() => handleDownload(file.id, file.originalName)}
                   className='p-2 hover:bg-elevation-1 rounded transition-colors text-text hover:text-foreground'
                   title='Baixar arquivo'
                 >
                   <Download size={18} />
-                </a>
+                </button>
                 <button
                   onClick={() => handleDelete(file.id)}
                   disabled={deletingId === file.id}

@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Folder, FolderOpen, Group, Shredder, Users, Users2 } from 'lucide-react';
+import { LayoutDashboard, Folder, FolderOpen, Shredder } from 'lucide-react';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -17,6 +17,18 @@ export default function Sidebar() {
           <h3 className="text-xs font-semibold text-text uppercase tracking-wider mb-4">
             Menu
           </h3>
+
+          <Link
+            href="/dashboard"
+            className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
+              isActive('/dashboard')
+                ? 'bg-primary text-primary-foreground'
+                : 'text-foreground hover:bg-elevation-2'
+            }`}
+          >
+            <LayoutDashboard size={24} />
+            <span className="font-medium">Dashboard</span>
+          </Link>
 
           <Link
             href="/my-files"

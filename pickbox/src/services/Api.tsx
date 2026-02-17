@@ -155,6 +155,27 @@ const Api = {
         throw e;
       }
     },
+    downloadFile: async function (fileId: string) {
+      try {
+        const response = await backendRoute.get(`/files/download/${fileId}`, {
+          responseType: 'blob',
+          withCredentials: true,
+        });
+        return response;
+      } catch(e) {
+        throw e;
+      }
+    },
+    downloadFileByLink: async function (token: string) {
+      try {
+        const response = await backendRoute.get(`/files/public/download/${token}`, {
+          responseType: 'blob',
+        });
+        return response;
+      } catch(e) {
+        throw e;
+      }
+    },
 }
 
 export default Api

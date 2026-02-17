@@ -4,7 +4,7 @@ export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Rotas protegidas - requerem autenticação
-  const protectedRoutes = ['/my-files', '/shared-with-me', '/settings'];
+  const protectedRoutes = ['/dashboard','/my-files', '/shared-with-me', '/settings'];
   
   // Rotas de autenticação - só podem ser acessadas se deslogado
   const authRoutes = ['/signin', '/signup'];

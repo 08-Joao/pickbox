@@ -46,12 +46,15 @@ export default function PublicDownloadPage({
   const handleDownload = async () => {
     setIsDownloading(true);
     try {
+      const response = await Api.downloadFileByLink(token);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
-      link.href = `${process.env.NEXT_PUBLIC_API_URL}/files/public/download/${token}`;
-      link.download = fileInfo?.originalName || 'download';
+      link.href = url;
+      link.setAttribute('download', fileInfo?.originalName || 'download');
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
     } catch (err) {
       setError('Erro ao baixar arquivo');
     } finally {
