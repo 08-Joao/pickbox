@@ -174,17 +174,20 @@ export default function FilesList() {
 
   return (
     <>
-    <div className='space-y-2'>
+    <div className='space-y-3'>
       {files.map((file) => (
         <div
           key={file.id}
-          className='flex items-center justify-between p-4 bg-elevation-2 rounded-lg hover:bg-elevation-3 transition-colors'
+          className='group flex flex-col md:flex-row md:items-center md:justify-between p-4 bg-elevation-2 rounded-lg hover:bg-elevation-3 transition-all duration-200 border border-border hover:border-primary/50 hover:shadow-md gap-4'
         >
-          <div className='flex items-center gap-4 flex-1 min-w-0'>
-            <File size={24} className='text-primary shrink-0' />
-            <div className='min-w-0 flex-1'>
+          {/* Conteúdo principal - Nome e Info */}
+          <div className='flex items-start gap-3 flex-1 min-w-0'>
+            <div className='p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors shrink-0'>
+              <File size={20} className='text-primary' />
+            </div>
+            <div className='flex-1 min-w-0'>
               {editingId === file.id ? (
-                <div className='flex gap-2 mb-2'>
+                <div className='flex gap-2'>
                   <input
                     type='text'
                     value={editingName}
@@ -193,7 +196,6 @@ export default function FilesList() {
                       const oldExt = getFileExtension(file.originalName);
                       const newExt = getFileExtension(newValue);
 
-                      // Se a extensão foi alterada ou removida, não permitir
                       if (oldExt) {
                         if (!newExt || oldExt !== newExt) {
                           return;
@@ -202,64 +204,57 @@ export default function FilesList() {
 
                       setEditingName(newValue);
                     }}
-                    className='flex-1 px-2 py-1 text-sm bg-elevation-1 border border-border rounded text-foreground focus:outline-none focus:border-primary'
+                    className='flex-1 px-3 py-1 text-sm bg-elevation-1 border border-primary rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50'
                     autoFocus
                   />
                 </div>
               ) : (
-                <p className='text-sm font-medium text-foreground truncate'>
-                  {file.originalName}
-                </p>
+                <>
+                  <p className='text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors'>
+                    {file.originalName}
+                  </p>
+                  <div className='flex gap-4 text-xs text-text mt-1'>
+                    <span>{formatFileSize(file.size)}</span>
+                    <span>{formatDate(file.createdAt)}</span>
+                  </div>
+                </>
               )}
-              <div className='flex gap-4 text-xs text-text'>
-                <span>{formatFileSize(file.size)}</span>
-                <span>{formatDate(file.createdAt)}</span>
-              </div>
             </div>
           </div>
+
+          {/* Ações */}
           <div className='flex items-center gap-2 shrink-0'>
             {editingId === file.id ? (
               <>
                 <button
                   onClick={() => handleEditSave(file.id)}
                   disabled={isSaving || !editingName.trim()}
-                  className='p-2 hover:bg-primary/20 rounded transition-colors text-primary disabled:opacity-50'
+                  className='px-3 py-1 hover:bg-primary/20 rounded-lg transition-colors text-primary disabled:opacity-50 text-sm font-medium'
                   title='Salvar'
                 >
                   {isSaving ? (
-                    <Loader2 size={18} className='animate-spin' />
+                    <Loader2 size={16} className='animate-spin' />
                   ) : (
-                    <Check size={18} />
+                    <Check size={16} />
                   )}
                 </button>
                 <button
                   onClick={handleEditCancel}
                   disabled={isSaving}
-                  className='p-2 hover:bg-error/20 rounded transition-colors text-error disabled:opacity-50'
+                  className='px-3 py-1 hover:bg-error/20 rounded-lg transition-colors text-error disabled:opacity-50 text-sm font-medium'
                   title='Cancelar'
                 >
-                  <X size={18} />
+                  <X size={16} />
                 </button>
               </>
             ) : (
               <>
                 <button
-                  onClick={() => handleEditStart(file.id, file.originalName)}
-                  className='p-2 hover:bg-elevation-1 rounded transition-colors text-text hover:text-foreground'
-                  title='Editar nome'
+                  onClick={() => handleDownload(file.id, file.originalName)}
+                  className='p-2 hover:bg-primary/20 rounded-lg transition-colors text-primary'
+                  title='Baixar arquivo'
                 >
-                  <Edit2 size={18} />
-                </button>
-                <button
-                  onClick={() => {
-                    setSelectedFileId(file.id);
-                    setSelectedFileName(file.originalName);
-                    setShareModalOpen(true);
-                  }}
-                  className='p-2 hover:bg-elevation-1 rounded transition-colors text-text hover:text-foreground'
-                  title='Compartilhar com usuário'
-                >
-                  <Share2 size={18} />
+                  <Download size={18} />
                 </button>
                 <button
                   onClick={() => {
@@ -267,22 +262,33 @@ export default function FilesList() {
                     setSelectedFileName(file.originalName);
                     setLinkShareModalOpen(true);
                   }}
-                  className='p-2 hover:bg-elevation-1 rounded transition-colors text-text hover:text-foreground'
+                  className='p-2 hover:bg-elevation-1 rounded-lg transition-colors text-text hover:text-foreground'
                   title='Compartilhar por link'
                 >
                   <Link2 size={18} />
                 </button>
                 <button
-                  onClick={() => handleDownload(file.id, file.originalName)}
-                  className='p-2 hover:bg-elevation-1 rounded transition-colors text-text hover:text-foreground'
-                  title='Baixar arquivo'
+                  onClick={() => {
+                    setSelectedFileId(file.id);
+                    setSelectedFileName(file.originalName);
+                    setShareModalOpen(true);
+                  }}
+                  className='p-2 hover:bg-elevation-1 rounded-lg transition-colors text-text hover:text-foreground'
+                  title='Compartilhar com usuário'
                 >
-                  <Download size={18} />
+                  <Share2 size={18} />
+                </button>
+                <button
+                  onClick={() => handleEditStart(file.id, file.originalName)}
+                  className='p-2 hover:bg-elevation-1 rounded-lg transition-colors text-text hover:text-foreground'
+                  title='Editar nome'
+                >
+                  <Edit2 size={18} />
                 </button>
                 <button
                   onClick={() => handleDelete(file.id)}
                   disabled={deletingId === file.id}
-                  className='p-2 hover:bg-error/20 rounded transition-colors text-text hover:text-error disabled:opacity-50'
+                  className='p-2 hover:bg-error/20 rounded-lg transition-colors text-text hover:text-error disabled:opacity-50'
                   title='Deletar arquivo'
                 >
                   {deletingId === file.id ? (

@@ -4,14 +4,16 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSidebar } from '@/contexts/SidebarContext';
 import Image from 'next/image';
 import { Button } from './ui/button';
-import { Upload } from 'lucide-react';
+import { Upload, Menu } from 'lucide-react';
 import UploadModal from './UploadModal';
 
 export default function Navbar() {
   const router = useRouter();
   const { user, signout } = useAuth();
+  const { toggleSidebar } = useSidebar();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -28,8 +30,16 @@ export default function Navbar() {
   return (
     <nav className="bg-elevation-1 border-b border-border sticky top-0 z-40">
       <div className="flex items-center justify-between h-16 px-6">
+        {/* Menu Button Mobile */}
+        <button
+          onClick={toggleSidebar}
+          className="md:hidden p-2 hover:bg-elevation-2 rounded-lg transition-colors"
+        >
+          <Menu size={24} className="text-foreground" />
+        </button>
+
         {/* Logo */}
-        <Link href="/my-files" className="flex items-center gap-2 p -"> 
+        <Link href="/my-files" className="flex items-center gap-2"> 
           <Image src="/logo.png" alt="Logo" width={80} height={80} />
         </Link>
 
